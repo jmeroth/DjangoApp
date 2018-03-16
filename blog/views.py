@@ -1,7 +1,15 @@
 from django.shortcuts import render
+from .models import Post, Bird
+from django.views.generic import ListView
+from django.utils import timezone
 
 # Create your views here.
 
+
 def post_list(request):
-    return render(request, 'blog/post_list.html', {})
-    
+    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    return render(request, 'blog/post_list.html', {'posts': posts})
+
+def post_data(request):
+	birds = Bird.objects.order_by('-date')[:5]
+	return render(request, 'blog/post_data.html', {'birds': birds})
