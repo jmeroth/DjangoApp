@@ -1,15 +1,15 @@
 <html>
 <head></head>
 <body>
-[
+[<br>
 {% block content %}
 	
 	{% for bird in birds %}
-		<p>{" Number": "{{ bird.id }}"
+		{" Number": "{{ bird.id }}"
 		, "Description": "{{ bird.description }}"
 		, "Date": "{{ bird.date }}"
 		, "Lat": "{{ bird.lat }}"
-		, "Long": "{{ bird.lon }}"},</p>
+		, "Long": "{{ bird.lon }}"},<br>
 	{% endfor %}
 	
 {% endblock %}
