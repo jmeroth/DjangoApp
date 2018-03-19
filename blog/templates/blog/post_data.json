@@ -1,0 +1,18 @@
+<html>
+<head></head>
+<body>
+[<br>
+{% block content %}
+	
+	{% for bird in birds %}
+		{" Number": "{{ bird.id }}"
+		, "Description": "{{ bird.description }}"
+		, "Date": "{{ bird.date }}"
+		, "Lat": "{{ bird.lat }}"
+		, "Long": "{{ bird.lon }}"},<br>
+	{% endfor %}
+	
+{% endblock %}
+]
+</body>
+</html>

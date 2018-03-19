@@ -12,4 +12,4 @@ def post_list(request):
 
 def post_data(request):
 	birds = Bird.objects.order_by('-date')[:5]
-	return render(request, 'blog/post_data.html', {'birds': birds})
+	return render(request, 'blog/post_data.json', {'birds': birds})
