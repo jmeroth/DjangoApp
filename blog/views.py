@@ -2,6 +2,8 @@ from django.shortcuts import render
 from .models import Post, Bird
 from django.views.generic import ListView
 from django.utils import timezone
+from django.views.static import serve
+import os
 
 # Create your views here.
 
@@ -12,4 +14,27 @@ def post_list(request):
 
 def post_data(request):
 	birds = Bird.objects.order_by('-date')[:5]
-	return render(request, 'blog/post_data.json', {'birds': birds})
+	# create or open the text file to hold the data.
+	f= open("birddata.json", "w+")
+	print("[")
+	f.write("[")
+	for bird in birds:
+		print('{"Number": "%s"}' % bird.id +
+			',{"Description": "%s"}' % bird.description +
+			',{"Date": "%s"}' % bird.date +
+			',{"Lat": "%s"}' % bird.lat +
+			',{"Long": "%s"}' % bird.lon)
+		f.write('{"Number": "%s"}' % bird.id +
+			',{"Description": "%s"}' % bird.description +
+			',{"Date": "%s"}' % bird.date +
+			',{"Lat": "%s"}' % bird.lat +
+			',{"Long": "%s"}' % bird.lon)
+	print("]")
+	f.write("]")
+	f.close()
+	#return render(request, 'blog/post_data.html', {'birds': birds})
+
+	filepath = "C:\\Users\\jmeroth\\djangogirls\\birddata.json"
+	
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
