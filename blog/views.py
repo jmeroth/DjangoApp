@@ -19,16 +19,16 @@ def post_data(request):
 	print("[")
 	f.write("[")
 	for bird in birds:
-		print('{"Number": "%s"}' % bird.id +
-			',{"Description": "%s"}' % bird.description +
-			',{"Date": "%s"}' % bird.date +
-			',{"Lat": "%s"}' % bird.lat +
-			',{"Long": "%s"}' % bird.lon)
-		f.write('{"Number": "%s"}' % bird.id +
-			',{"Description": "%s"}' % bird.description +
-			',{"Date": "%s"}' % bird.date +
-			',{"Lat": "%s"}' % bird.lat +
-			',{"Long": "%s"}' % bird.lon)
+		print('{"Number": "%s"' % bird.id +
+			',"Description": "%s"' % bird.description +
+			',"Date": "%s"' % bird.date +
+			',"Lat": "%s"' % bird.lat +
+			',"Long": "%s"},' % bird.lon)
+		f.write('{"Number": "%s"' % bird.id +
+			',"Description": "%s"' % bird.description +
+			',"Date": "%s"' % bird.date +
+			',"Lat": "%s"' % bird.lat +
+			',"Long": "%s"},' % bird.lon)
 	print("]")
 	f.write("]")
 	f.close()
