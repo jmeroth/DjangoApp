@@ -32,9 +32,9 @@ def post_data(request):
 	print("]")
 	f.write("]")
 	f.close()
-	#return render(request, 'blog/post_data.html', {'birds': birds})
-
+	# return render(request, 'blog/post_data.html', {'birds': birds})
+	# Linux vs. Windows
+	# filepath = "/home/jmeroth/birddata.json"
 	filepath = "C:\\Users\\jmeroth\\djangogirls\\birddata.json"
-	
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
