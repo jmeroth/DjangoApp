@@ -26,3 +26,14 @@ class Bird(models.Model):
 
 	def __str__(self):
 		return self.description
+
+
+class Church(models.Model):
+	description = models.CharField(max_length=200)
+	date = models.DateTimeField(default=timezone.now)
+	lat = models.CharField(max_length=20)
+	lon = models.CharField(max_length=20)
+
+	def __str__(self):
+		return self.description
+
