@@ -4,6 +4,8 @@ from django.views.generic import ListView
 from django.utils import timezone
 from django.views.static import serve
 import os
+import requests
+import json
 
 # Create your views here.
 
@@ -65,3 +67,31 @@ def church_data(request):
 	filepath = "C:\\Users\\jmeroth\\djangogirls\\churchdata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
+
+def crime_data(request):
+	# create or open the text file to hold the data.
+	f= open("crimedata.json", "w+")
+	f.write("[")
+	# Retrieve data from data.boston.gov where "limit" is num of records returned.
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=20000"
+	r = requests.get(url)
+	myCount = 0
+	if(str(r) == "<Response [200]>"):
+		myjson = r.json()
+	else:
+		print (r)
+		print("'GET' response error")
+	# Once "myjson" is defined:
+	for i in myjson['result']['records']:
+		if (i['SHOOTING'] == 'Y'):
+			f.write('{" Number": "%s"' % str(i["_id"]) +
+			',"Description": "%s"' % str(i["OFFENSE_CODE_GROUP"]) +
+			',"Date": "%s"' % str(i['OCCURRED_ON_DATE']) +
+			',"Lat": "%s"' % str(i['Lat']) +
+			',"Long": "%s"},' % str(i['Long']))
+	f.write("]")
+	f.close()
+	# Linux vs. Windows
+	# filepath = "/home/jmeroth/crimedata.json"
+	filepath = "C:\\Users\\jmeroth\\djangogirls\\crimedata.json"
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
