@@ -36,8 +36,8 @@ def post_data(request):
 	f.close()
 	# return render(request, 'blog/post_data.html', {'birds': birds})
 	# Linux vs. Windows
-	# filepath = "/home/jmeroth/birddata.json"
-	filepath = "C:\\Users\\jmeroth\\djangogirls\\birddata.json"
+	filepath = "/home/jmeroth/birddata.json"
+	#filepath = "C:\\Users\\jmeroth\\djangogirls\\birddata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
@@ -63,8 +63,8 @@ def church_data(request):
 	f.close()
 	# return render(request, 'blog/church_data.html', {'churches': churches})
 	# Linux vs. Windows
-	# filepath = "/home/jmeroth/churchdata.json"
-	filepath = "C:\\Users\\jmeroth\\djangogirls\\churchdata.json"
+	filepath = "/home/jmeroth/churchdata.json"
+	#filepath = "C:\\Users\\jmeroth\\djangogirls\\churchdata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
@@ -92,6 +92,6 @@ def crime_data(request):
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	# filepath = "/home/jmeroth/crimedata.json"
-	filepath = "C:\\Users\\jmeroth\\djangogirls\\crimedata.json"
+	filepath = "/home/jmeroth/crimedata.json"
+	#filepath = "C:\\Users\\jmeroth\\djangogirls\\crimedata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
