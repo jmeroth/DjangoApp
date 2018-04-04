@@ -73,7 +73,7 @@ def crime_data(request):
 	f= open("crimedata.json", "w+")
 	f.write("[")
 	# Retrieve data from data.boston.gov where "limit" is num of records returned.
-	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=20000"
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=10000"
 	r = requests.get(url)
 	myCount = 0
 	if(str(r) == "<Response [200]>"):
