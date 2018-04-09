@@ -7,6 +7,13 @@ import os
 import requests
 import json
 
+# Utility functions.
+
+def addr_to_coords(add_string):
+	# stub - function will call geocode api
+	print("Function addr_to_coords() = %s" % add_string)
+	return (42.000, -71.000)
+
 # Create your views here.
 
 
@@ -94,4 +101,34 @@ def crime_data(request):
 	# Linux vs. Windows
 	filepath = "/home/jmeroth/crimedata.json"
 	#filepath = "C:\\Users\\jmeroth\\djangogirls\\crimedata.json"
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+
+def construction_data(request):
+	# create or open the text file to hold the data.
+	f= open("constructiondata.json", "w+")
+	f.write("[")
+	# Retrieve data from data.boston.gov where "limit" is num of records returned.
+	url = "https://data.boston.gov/export/36f/cf9/36fcf981-e414-4891-93ea-f5905cec46fc.json"
+	r = requests.get(url)
+	myCount = 0
+	if(str(r) == "<Response [200]>"):
+		myjson = r.json()
+	else:
+		print (r)
+		print("'GET' response error")
+	# Once "myjson" is defined:
+	for i in myjson:
+		address_string = i['Address1']+' '+i['Street']+' '+i['Neighborhood']+' MA'
+		if (i['ProjectCategory'] == 'EMERGENCY'):
+			f.write('{" Number": "%s"' % str(i["Permit"]) +
+			',"Description": "%s"' % str(i["ConstructionNotes"]) +
+			',"Date": "%s"' % str(i['ExpirationDate']) +
+			',"Lat": "%s"' % str(addr_to_coords(address_string)[0]) +
+			',"Long": "%s"},' % str(addr_to_coords(address_string)[1]))
+	f.write("]")
+	f.close()
+	# Linux vs. Windows
+	#filepath = "/home/jmeroth/constructiondata.json"
+	filepath = "C:\\Users\\jmeroth\\djangogirls\\constructiondata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
