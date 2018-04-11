@@ -145,7 +145,7 @@ def permit_data(request):
 	f= open("permitdata.json", "w+")
 	f.write("[")
 	# Retrieve data from data.boston.gov.  Limit = number of records.
-	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=6ddcd912-32a0-43df-9908-63574f8c7e77&limit=10"
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=6ddcd912-32a0-43df-9908-63574f8c7e77&q=2018-&limit=10"
 	r = requests.get(url)
 	if(str(r) == "<Response [200]>"):
 		myjson = r.json()
@@ -169,4 +169,3 @@ def permit_data(request):
 	filepath = "/home/jmeroth/permitdata.json"
 	#filepath = "C:\\Users\\jmeroth\\djangogirls\\permitdata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
-	
