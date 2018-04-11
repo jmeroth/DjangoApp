@@ -11,6 +11,11 @@ import json
 
 def addr_to_coords(add_string):
 	# stub - function will call geocode api
+	#MY_API_KEY = "AIzaSyB6MPTDLVXsah1pC28PswyBvl7Ze6-83vM"
+	#https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
+	#baseUrl = "https://maps.googleapis.com/maps/api/geocode/json"
+	#myUrl =  baseUrl + "?address=" + add_string + "&key=" + MY_API_KEY
+	#print(myUrl)
 	print("Function addr_to_coords() = %s" % add_string)
 	return (42.000, -71.000)
 
@@ -129,6 +134,39 @@ def construction_data(request):
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	#filepath = "/home/jmeroth/constructiondata.json"
-	filepath = "C:\\Users\\jmeroth\\djangogirls\\constructiondata.json"
+	filepath = "/home/jmeroth/constructiondata.json"
+	#filepath = "C:\\Users\\jmeroth\\djangogirls\\constructiondata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+
+#  Approved building permits
+def permit_data(request):
+	# create or open the text file to hold the data.
+	f= open("permitdata.json", "w+")
+	f.write("[")
+	# Retrieve data from data.boston.gov.  Limit = number of records.
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=6ddcd912-32a0-43df-9908-63574f8c7e77&limit=10"
+	r = requests.get(url)
+	if(str(r) == "<Response [200]>"):
+		myjson = r.json()
+	else:
+		print (r)
+		print("'GET' response error")
+	# Once "myjson" is defined:
+	for i in myjson['result']['records']:
+		address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
+		if (i['STATUS'] == 'Open'):
+			f.write('{" Number": "%s"' % str(i["PermitNumber"]) +
+			',"Description": "%s"' % str(i["DESCRIPTION"]) +
+			',"Date": "%s"' % str(i['ISSUED_DATE']) +
+			#',"Lat": "%s"' % str(addr_to_coords(address_string)[0]) +
+			',"Lat": "%s"' % str(i['Location'][1:9]) +
+			#',"Long": "%s"},' % str(addr_to_coords(address_string)[1]))
+			',"Long": "%s"},' % str(i['Location'][15:24]))
+	f.write("]")
+	f.close()
+	# Linux vs. Windows
+	filepath = "/home/jmeroth/permitdata.json"
+	#filepath = "C:\\Users\\jmeroth\\djangogirls\\permitdata.json"
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+	
