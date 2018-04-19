@@ -157,7 +157,7 @@ def permit_data(request):
 		address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
 		if (i['STATUS'] == 'Open'):
 			f.write('{" Number": "%s"' % str(i["PermitNumber"]) +
-			',"Description": "%s"' % str(i["DESCRIPTION"]) +
+			',"Description": "%s"' % str(i["Comments"]) +
 			',"Date": "%s"' % str(i['ISSUED_DATE']) +
 			#',"Lat": "%s"' % str(addr_to_coords(address_string)[0]) +
 			',"Lat": "%s"' % str(i['Location'][1:9]) +
@@ -168,4 +168,34 @@ def permit_data(request):
 	# Linux vs. Windows
 	filepath = "/home/jmeroth/permitdata.json"
 	#filepath = "C:\\Users\\jmeroth\\djangogirls\\permitdata.json"
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+
+#  311 Graffiti
+def graffiti_data(request):
+	# create or open the text file to hold the data.
+	f= open("graffitidata.json", "w+")
+	f.write("[")
+	# Retrieve data from data.boston.gov.
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=2968e2c0-d479-49ba-a884-4ef523ada3c0&q=graffiti"
+	r = requests.get(url)
+	if(str(r) == "<Response [200]>"):
+		myjson = r.json()
+	else:
+		print (r)
+		print("'GET' response error")
+	# Once "myjson" is defined:
+	for i in myjson['result']['records']:
+		if (i['CASE_STATUS'] == 'Open'):
+			f.write('{" Number": "%s"' % str(i["CASE_ENQUIRY_ID"]) +
+			',"Description": "%s"' % str(i["REASON"]) +
+			',"Date": "%s"' % str(i['open_dt']) +
+			',"Lat": "%s"' % str(i['Latitude']) +
+			',"Long": "%s"' % str(i['Longitude']) +
+			',"submittedphoto": "%s"},' % str(i["SubmittedPhoto"]))
+	f.write("]")
+	f.close()
+	# Linux vs. Windows
+	#filepath = "/home/jmeroth/graffitidata.json"
+	filepath = "C:\\Users\\jmeroth\\djangogirls\\graffitidata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
