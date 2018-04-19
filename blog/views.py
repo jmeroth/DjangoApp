@@ -196,6 +196,6 @@ def graffiti_data(request):
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	#filepath = "/home/jmeroth/graffitidata.json"
-	filepath = "C:\\Users\\jmeroth\\djangogirls\\graffitidata.json"
+	filepath = "/home/jmeroth/graffitidata.json"
+	#filepath = "C:\\Users\\jmeroth\\djangogirls\\graffitidata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
