@@ -171,13 +171,13 @@ def permit_data(request):
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
-#  311 Graffiti
-def graffiti_data(request):
+#  311 tree
+def tree_data(request):
 	# create or open the text file to hold the data.
-	f= open("graffitidata.json", "w+")
+	f= open("treedata.json", "w+")
 	f.write("[")
 	# Retrieve data from data.boston.gov.
-	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=2968e2c0-d479-49ba-a884-4ef523ada3c0&q=graffiti"
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=2968e2c0-d479-49ba-a884-4ef523ada3c0&q=tree"
 	r = requests.get(url)
 	if(str(r) == "<Response [200]>"):
 		myjson = r.json()
@@ -186,9 +186,9 @@ def graffiti_data(request):
 		print("'GET' response error")
 	# Once "myjson" is defined:
 	for i in myjson['result']['records']:
-		if (i['CASE_STATUS'] == 'Open'):
+		if (i['QUEUE'] == 'PARK_Tree Maintenance Request'):
 			f.write('{" Number": "%s"' % str(i["CASE_ENQUIRY_ID"]) +
-			',"Description": "%s"' % str(i["REASON"]) +
+			',"Description": "%s"' % str(i["CLOSURE_REASON"]) +
 			',"Date": "%s"' % str(i['open_dt']) +
 			',"Lat": "%s"' % str(i['Latitude']) +
 			',"Long": "%s"' % str(i['Longitude']) +
@@ -196,6 +196,6 @@ def graffiti_data(request):
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	filepath = "/home/jmeroth/graffitidata.json"
-	#filepath = "C:\\Users\\jmeroth\\djangogirls\\graffitidata.json"
+	filepath = "/home/jmeroth/treedata.json"
+	#filepath = "C:\\Users\\jmeroth\\djangogirls\\treedata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
