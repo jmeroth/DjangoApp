@@ -7,24 +7,32 @@ import os
 import requests
 import json
 
+
 # Utility functions.
 
 def addr_to_coords(add_string):
 	# stub - function will call geocode api
-	#MY_API_KEY = "AIzaSyB6MPTDLVXsah1pC28PswyBvl7Ze6-83vM"
-	#https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
-	#baseUrl = "https://maps.googleapis.com/maps/api/geocode/json"
-	#myUrl =  baseUrl + "?address=" + add_string + "&key=" + MY_API_KEY
-	#print(myUrl)
-	print("Function addr_to_coords() = %s" % add_string)
-	return (42.000, -71.000)
+	MY_API_KEY = "AIzaSyB6MPTDLVXsah1pC28PswyBvl7Ze6-83vM"
+	baseUrl = "https://maps.googleapis.com/maps/api/geocode/json"
+	myUrl =  baseUrl + "?address=" + add_string + "&key=" + MY_API_KEY
+	r = requests.get(myUrl)
+	print(r)
+	if(str(r) == "<Response [200]>"):
+		myjson = r.json()
+	else:
+		print(r)
+		print("'GET' response error")
+	# Returns a dictionary of 'lat' and 'lng' values.
+	return myjson["results"][0]["geometry"]["location"]
 
-# Create your views here.
 
+# list view
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
     return render(request, 'blog/post_list.html', {'posts': posts})
+
+# data views
 
 def post_data(request):
 	birds = Bird.objects.order_by('-date')[:10]
@@ -48,8 +56,10 @@ def post_data(request):
 	f.close()
 	# return render(request, 'blog/post_data.html', {'birds': birds})
 	# Linux vs. Windows
-	filepath = "/home/jmeroth/birddata.json"
-	#filepath = r"C:\Users\jmeroth\djangogirls\birddata.json"
+	if os.name == 'nt':
+		filepath = r"C:\Users\jmeroth\djangogirls\birddata.json"
+	else:
+		filepath = "/home/jmeroth/birddata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
@@ -75,8 +85,10 @@ def church_data(request):
 	f.close()
 	# return render(request, 'blog/church_data.html', {'churches': churches})
 	# Linux vs. Windows
-	filepath = "/home/jmeroth/churchdata.json"
-	#filepath = "C:\\Users\\jmeroth\\djangogirls\\churchdata.json"
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\churchdata.json"
+	else:
+		filepath = "/home/jmeroth/churchdata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
@@ -87,7 +99,6 @@ def crime_data(request):
 	# Retrieve data from data.boston.gov where "limit" is num of records returned.
 	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=10000"
 	r = requests.get(url)
-	myCount = 0
 	if(str(r) == "<Response [200]>"):
 		myjson = r.json()
 	else:
@@ -104,8 +115,10 @@ def crime_data(request):
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	filepath = "/home/jmeroth/crimedata.json"
-	#filepath = "C:\\Users\\jmeroth\\djangogirls\\crimedata.json"
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\crimedata.json"
+	else:
+		filepath = "/home/jmeroth/crimedata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
@@ -114,32 +127,34 @@ def construction_data(request):
 	f= open("constructiondata.json", "w+")
 	f.write("[")
 	# Retrieve data from data.boston.gov where "limit" is num of records returned.
-	url = "https://data.boston.gov/export/36f/cf9/36fcf981-e414-4891-93ea-f5905cec46fc.json"
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=36fcf981-e414-4891-93ea-f5905cec46fc&limit=10"
 	r = requests.get(url)
-	myCount = 0
 	if(str(r) == "<Response [200]>"):
 		myjson = r.json()
 	else:
 		print (r)
 		print("'GET' response error")
 	# Once "myjson" is defined:
-	for i in myjson:
+	#print(myjson)
+	for i in myjson['result']['records']:
 		address_string = i['Address1']+' '+i['Street']+' '+i['Neighborhood']+' MA'
-		if (i['ProjectCategory'] == 'EMERGENCY'):
+		#if (i['ProjectCategory'] == 'EMERGENCY'):
+		if (True):
 			f.write('{" Number": "%s"' % str(i["Permit"]) +
 			',"Description": "%s"' % str(i["ConstructionNotes"]) +
 			',"Date": "%s"' % str(i['ExpirationDate']) +
-			',"Lat": "%s"' % str(addr_to_coords(address_string)[0]) +
-			',"Long": "%s"},' % str(addr_to_coords(address_string)[1]))
+			',"Lat": "%s"' % str(addr_to_coords(address_string)["lat"]) +
+			',"Long": "%s"},' % str(addr_to_coords(address_string)["lng"]))
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	filepath = "/home/jmeroth/constructiondata.json"
-	#filepath = "C:\\Users\\jmeroth\\djangogirls\\constructiondata.json"
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\constructiondata.json"
+	else:
+		filepath = "/home/jmeroth/constructiondata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
-#  Approved building permits
 def permit_data(request):
 	# create or open the text file to hold the data.
 	f= open("permitdata.json", "w+")
@@ -166,12 +181,13 @@ def permit_data(request):
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	filepath = "/home/jmeroth/permitdata.json"
-	#filepath = "C:\\Users\\jmeroth\\djangogirls\\permitdata.json"
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\permitdata.json"
+	else:
+		filepath = "/home/jmeroth/permitdata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
-#  311 tree
 def tree_data(request):
 	# create or open the text file to hold the data.
 	f= open("treedata.json", "w+")
@@ -196,6 +212,8 @@ def tree_data(request):
 	f.write("]")
 	f.close()
 	# Linux vs. Windows
-	filepath = "/home/jmeroth/treedata.json"
-	#filepath = "C:\\Users\\jmeroth\\djangogirls\\treedata.json"
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\treedata.json"
+	else:
+		filepath = "/home/jmeroth/treedata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
