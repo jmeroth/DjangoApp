@@ -37,23 +37,22 @@ def post_list(request):
 def post_data(request):
 	birds = Bird.objects.order_by('-date')[:10]
 	# create or open the text file to hold the data.
-	f= open("birddata.json", "w+")
-	print("[")
-	f.write("[")
-	for bird in birds:
-		print('{" Number": "%s"' % bird.id +
-			',"Description": "%s"' % bird.description +
-			',"Date": "%s"' % bird.date +
-			',"Lat": "%s"' % bird.lat +
-			',"Long": "%s"},' % bird.lon)
-		f.write('{" Number": "%s"' % bird.id +
-			',"Description": "%s"' % bird.description +
-			',"Date": "%s"' % bird.date +
-			',"Lat": "%s"' % bird.lat +
-			',"Long": "%s"},' % bird.lon)
-	print("]")
-	f.write("]")
-	f.close()
+	with open("birddata.json", "w+") as f:
+		print("[")
+		f.write("[")
+		for bird in birds:
+			print('{" Number": "%s"' % bird.id +
+				',"Description": "%s"' % bird.description +
+				',"Date": "%s"' % bird.date +
+				',"Lat": "%s"' % bird.lat +
+				',"Long": "%s"},' % bird.lon)
+			f.write('{" Number": "%s"' % bird.id +
+				',"Description": "%s"' % bird.description +
+				',"Date": "%s"' % bird.date +
+				',"Lat": "%s"' % bird.lat +
+				',"Long": "%s"},' % bird.lon)
+		print("]")
+		f.write("]")
 	# return render(request, 'blog/post_data.html', {'birds': birds})
 	# Linux vs. Windows
 	if os.name == 'nt':
@@ -66,23 +65,22 @@ def post_data(request):
 def church_data(request):
 	churches = Church.objects.order_by('-date')[:10]
 	# create or open the text file to hold the data.
-	f= open("churchdata.json", "w+")
-	print("[")
-	f.write("[")
-	for church in churches:
-		print('{" Number": "%s"' % church.id +
-			',"Description": "%s"' % church.description +
-			',"Date": "%s"' % church.date +
-			',"Lat": "%s"' % church.lat +
-			',"Long": "%s"},' % church.lon)
-		f.write('{" Number": "%s"' % church.id +
-			',"Description": "%s"' % church.description +
-			',"Date": "%s"' % church.date +
-			',"Lat": "%s"' % church.lat +
-			',"Long": "%s"},' % church.lon)
-	print("]")
-	f.write("]")
-	f.close()
+	with open("churchdata.json", "w+") as f:
+		print("[")
+		f.write("[")
+		for church in churches:
+			print('{" Number": "%s"' % church.id +
+				',"Description": "%s"' % church.description +
+				',"Date": "%s"' % church.date +
+				',"Lat": "%s"' % church.lat +
+				',"Long": "%s"},' % church.lon)
+			f.write('{" Number": "%s"' % church.id +
+				',"Description": "%s"' % church.description +
+				',"Date": "%s"' % church.date +
+				',"Lat": "%s"' % church.lat +
+				',"Long": "%s"},' % church.lon)
+		print("]")
+		f.write("]")
 	# return render(request, 'blog/church_data.html', {'churches': churches})
 	# Linux vs. Windows
 	if os.name == 'nt':
@@ -94,26 +92,25 @@ def church_data(request):
 
 def crime_data(request):
 	# create or open the text file to hold the data.
-	f= open("crimedata.json", "w+")
-	f.write("[")
-	# Retrieve data from data.boston.gov where "limit" is num of records returned.
-	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=10000"
-	r = requests.get(url)
-	if(str(r) == "<Response [200]>"):
-		myjson = r.json()
-	else:
-		print (r)
-		print("'GET' response error")
-	# Once "myjson" is defined:
-	for i in myjson['result']['records']:
-		if (i['SHOOTING'] == 'Y'):
-			f.write('{" Number": "%s"' % str(i["_id"]) +
-			',"Description": "%s"' % str(i["OFFENSE_CODE_GROUP"]) +
-			',"Date": "%s"' % str(i['OCCURRED_ON_DATE']) +
-			',"Lat": "%s"' % str(i['Lat']) +
-			',"Long": "%s"},' % str(i['Long']))
-	f.write("]")
-	f.close()
+	with open("crimedata.json", "w+") as f:
+		f.write("[")
+		# Retrieve data from data.boston.gov where "limit" is num of records returned.
+		url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=10000"
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		for i in myjson['result']['records']:
+			if (i['SHOOTING'] == 'Y'):
+				f.write('{" Number": "%s"' % str(i["_id"]) +
+				',"Description": "%s"' % str(i["OFFENSE_CODE_GROUP"]) +
+				',"Date": "%s"' % str(i['OCCURRED_ON_DATE']) +
+				',"Lat": "%s"' % str(i['Lat']) +
+				',"Long": "%s"},' % str(i['Long']))
+		f.write("]")
 	# Linux vs. Windows
 	if os.name == 'nt':
 		filepath = "C:\\Users\\jmeroth\\djangogirls\\crimedata.json"
@@ -124,29 +121,28 @@ def crime_data(request):
 
 def construction_data(request):
 	# create or open the text file to hold the data.
-	f= open("constructiondata.json", "w+")
-	f.write("[")
-	# Retrieve data from data.boston.gov where "limit" is num of records returned.
-	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=36fcf981-e414-4891-93ea-f5905cec46fc&limit=10"
-	r = requests.get(url)
-	if(str(r) == "<Response [200]>"):
-		myjson = r.json()
-	else:
-		print (r)
-		print("'GET' response error")
-	# Once "myjson" is defined:
-	#print(myjson)
-	for i in myjson['result']['records']:
-		address_string = i['Address1']+' '+i['Street']+' '+i['Neighborhood']+' MA'
-		#if (i['ProjectCategory'] == 'EMERGENCY'):
-		if (True):
-			f.write('{" Number": "%s"' % str(i["Permit"]) +
-			',"Description": "%s"' % str(i["ConstructionNotes"]) +
-			',"Date": "%s"' % str(i['ExpirationDate']) +
-			',"Lat": "%s"' % str(addr_to_coords(address_string)["lat"]) +
-			',"Long": "%s"},' % str(addr_to_coords(address_string)["lng"]))
-	f.write("]")
-	f.close()
+	with open("constructiondata.json", "w+") as f:
+		f.write("[")
+		# Retrieve data from data.boston.gov where "limit" is num of records returned.
+		url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=36fcf981-e414-4891-93ea-f5905cec46fc&limit=10"
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		#print(myjson)
+		for i in myjson['result']['records']:
+			address_string = i['Address1']+' '+i['Street']+' '+i['Neighborhood']+' MA'
+			#if (i['ProjectCategory'] == 'EMERGENCY'):
+			if (True):
+				f.write('{" Number": "%s"' % str(i["Permit"]) +
+				',"Description": "%s"' % str(i["ConstructionNotes"]) +
+				',"Date": "%s"' % str(i['ExpirationDate']) +
+				',"Lat": "%s"' % str(addr_to_coords(address_string)["lat"]) +
+				',"Long": "%s"},' % str(addr_to_coords(address_string)["lng"]))
+		f.write("]")
 	# Linux vs. Windows
 	if os.name == 'nt':
 		filepath = "C:\\Users\\jmeroth\\djangogirls\\constructiondata.json"
@@ -157,29 +153,28 @@ def construction_data(request):
 
 def permit_data(request):
 	# create or open the text file to hold the data.
-	f= open("permitdata.json", "w+")
-	f.write("[")
-	# Retrieve data from data.boston.gov.  Limit = number of records.
-	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=6ddcd912-32a0-43df-9908-63574f8c7e77&q=2018-&limit=10"
-	r = requests.get(url)
-	if(str(r) == "<Response [200]>"):
-		myjson = r.json()
-	else:
-		print (r)
-		print("'GET' response error")
-	# Once "myjson" is defined:
-	for i in myjson['result']['records']:
-		address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
-		if (i['STATUS'] == 'Open'):
-			f.write('{" Number": "%s"' % str(i["PermitNumber"]) +
-			',"Description": "%s"' % str(i["Comments"]) +
-			',"Date": "%s"' % str(i['ISSUED_DATE']) +
-			#',"Lat": "%s"' % str(addr_to_coords(address_string)[0]) +
-			',"Lat": "%s"' % str(i['Location'][1:9]) +
-			#',"Long": "%s"},' % str(addr_to_coords(address_string)[1]))
-			',"Long": "%s"},' % str(i['Location'][15:24]))
-	f.write("]")
-	f.close()
+	with open("permitdata.json", "w+") as f:
+		f.write("[")
+		# Retrieve data from data.boston.gov.  Limit = number of records.
+		url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=6ddcd912-32a0-43df-9908-63574f8c7e77&q=2018-&limit=10"
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		for i in myjson['result']['records']:
+			address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
+			if (i['STATUS'] == 'Open'):
+				f.write('{" Number": "%s"' % str(i["PermitNumber"]) +
+				',"Description": "%s"' % str(i["Comments"]) +
+				',"Date": "%s"' % str(i['ISSUED_DATE']) +
+				#',"Lat": "%s"' % str(addr_to_coords(address_string)[0]) +
+				',"Lat": "%s"' % str(i['Location'][1:9]) +
+				#',"Long": "%s"},' % str(addr_to_coords(address_string)[1]))
+				',"Long": "%s"},' % str(i['Location'][15:24]))
+		f.write("]")
 	# Linux vs. Windows
 	if os.name == 'nt':
 		filepath = "C:\\Users\\jmeroth\\djangogirls\\permitdata.json"
@@ -190,27 +185,26 @@ def permit_data(request):
 
 def tree_data(request):
 	# create or open the text file to hold the data.
-	f= open("treedata.json", "w+")
-	f.write("[")
-	# Retrieve data from data.boston.gov.
-	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=2968e2c0-d479-49ba-a884-4ef523ada3c0&q=tree"
-	r = requests.get(url)
-	if(str(r) == "<Response [200]>"):
-		myjson = r.json()
-	else:
-		print (r)
-		print("'GET' response error")
-	# Once "myjson" is defined:
-	for i in myjson['result']['records']:
-		if (i['QUEUE'] == 'PARK_Tree Maintenance Request'):
-			f.write('{" Number": "%s"' % str(i["CASE_ENQUIRY_ID"]) +
-			',"Description": "%s"' % str(i["CLOSURE_REASON"]) +
-			',"Date": "%s"' % str(i['open_dt']) +
-			',"Lat": "%s"' % str(i['Latitude']) +
-			',"Long": "%s"' % str(i['Longitude']) +
-			',"submittedphoto": "%s"},' % str(i["SubmittedPhoto"]))
-	f.write("]")
-	f.close()
+	with open("treedata.json", "w+") as f:
+		f.write("[")
+		# Retrieve data from data.boston.gov.
+		url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=2968e2c0-d479-49ba-a884-4ef523ada3c0&q=tree"
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		for i in myjson['result']['records']:
+			if (i['QUEUE'] == 'PARK_Tree Maintenance Request'):
+				f.write('{" Number": "%s"' % str(i["CASE_ENQUIRY_ID"]) +
+				',"Description": "%s"' % str(i["CLOSURE_REASON"]) +
+				',"Date": "%s"' % str(i['open_dt']) +
+				',"Lat": "%s"' % str(i['Latitude']) +
+				',"Long": "%s"' % str(i['Longitude']) +
+				',"submittedphoto": "%s"},' % str(i["SubmittedPhoto"]))
+		f.write("]")
 	# Linux vs. Windows
 	if os.name == 'nt':
 		filepath = "C:\\Users\\jmeroth\\djangogirls\\treedata.json"
