@@ -8,7 +8,7 @@ import requests
 import json
 
 
-# Utility functions.
+# Utility functions
 
 def addr_to_coords(add_string):
 	# stub - function will call geocode api
@@ -32,10 +32,11 @@ def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
     return render(request, 'blog/post_list.html', {'posts': posts})
 
+
 # data views
 
 def post_data(request):
-	birds = Bird.objects.order_by('-date')[:10]
+	birds = Bird.objects.order_by('-date')[:15]
 	# create or open the text file to hold the data.
 	with open("birddata.json", "w+") as f:
 		print("[")
@@ -197,7 +198,7 @@ def tree_data(request):
 			print("'GET' response error")
 		# Once "myjson" is defined:
 		for i in myjson['result']['records']:
-			if (i['QUEUE'] == 'PARK_Tree Maintenance Request'):
+			if i['QUEUE'] == 'PARK_Tree Maintenance Request':				
 				f.write('{" Number": "%s"' % str(i["CASE_ENQUIRY_ID"]) +
 				',"Description": "%s"' % str(i["CLOSURE_REASON"]) +
 				',"Date": "%s"' % str(i['open_dt']) +
