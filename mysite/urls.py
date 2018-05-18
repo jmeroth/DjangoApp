@@ -5,9 +5,9 @@ from django.contrib import admin
 
 
 urlpatterns = [
-     # url(r'^admin/', admin.site.urls),
+      url(r'^admin/', admin.site.urls),
      # Directs all traffic to the admin screen.	
-     url(r'', admin.site.urls),
+     #url(r'^/admin$', admin.site.urls),
      url(r'', include('blog.urls')),
 ]
 

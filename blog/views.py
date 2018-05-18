@@ -26,12 +26,24 @@ def addr_to_coords(add_string):
 	return myjson["results"][0]["geometry"]["location"]
 
 
+# menu view
+
+def menu(request):
+    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    #return render(request, 'blog/post_list.html', {'posts': posts})
+    return render(request, 'base.html', {'posts': posts})
+
 # list view
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
     return render(request, 'blog/post_list.html', {'posts': posts})
 
+# bird_api view
+
+def bird_api(request):
+    birds = Bird.objects.all()  #  filter(published_date__lte=timezone.now()).order_by('published_date')
+    return render(request, 'blog/bird_api.html', {'birds': birds})
 
 # data views
 

@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+	</head>
+	<body>
+{% load staticfiles %}
+		<div id="header">
+			<span class="logo">City Big Data</span>
+			<ul class="menu">
+				<li><a href="UrlBlockedError.aspx" target="_blank">My dashboard</a> </li>
+				<li><a href="blog/" target="_blank">Blog</a> </li>
+				<li><a href="#">Birds</a> </li>
+				<li><a href="#">Churches</a> </li>
+			</ul>
+				<span class="user">
+				Hello {{ request.user.first_name }},
+				<a href="UrlBlockedError.aspx" target="_blank">Logout</a> 
+			</span>
+		</div>
+		{% if messages %}
+			<ul class="messages">
+			{% for message in messages %}
+				<li class="{{ message.tags }}">{{ message|safe }} <a href="#" class="close">x</a> {% endfor %}</li>
+			</ul>
+		{% endif %}
+		<div id="content">{% block content %} {% endblock %} </div>
+	</body>
+</html>
