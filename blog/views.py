@@ -6,9 +6,44 @@ from django.views.static import serve
 import os
 import requests
 import json
+import folium
 
 
 # Utility functions
+
+def mymap(request):
+
+	map = folium.Map(location=[42.34, -71.1], zoom_start=12, tiles="cartodbdark_matter")
+	# Stamen Terrain
+	# Mapbox Bright
+	# Mapbox Control Room - dark with cities in green.
+	# stamenwatercolor - very colorfull
+	# cartodbpositron - grey, best
+	birds = Bird.objects.order_by('-date')[:15]
+	# Creates arrays from the database objects to zip and provide the data for markers.
+	lat = []
+	lon = []
+	des = []
+	for bird in birds:
+		lat.append(float(bird.lat))
+		lon.append(float(bird.lon))
+		des.append(bird.description)
+		print(bird.lat, bird.lon, bird.description)
+	fgb = folium.FeatureGroup(name="Birds")
+	for lt, ln, ds in zip(lat, lon, des):
+		fgb.add_child(folium.CircleMarker(location=[lt, ln]
+											, popup=folium.Popup(
+												str(ds), parse_html=True)
+											, color='green'
+											, radius=3
+											, fill_color='green'
+											, fill=True
+											, fill_opacity=0.7))
+	map.add_child(fgb)
+	map.add_child(folium.LayerControl())
+	map.save("blog/templates/Map1.html")
+	return render(request, 'Map1.html',)
+
 
 def addr_to_coords(add_string):
 	# stub - function will call geocode api
