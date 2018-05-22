@@ -42,7 +42,12 @@ def mymap(request):
 	map.add_child(fgb)
 	map.add_child(folium.LayerControl())
 	map.save("blog/templates/Map1.html")
+	# for prod:
+	#map.save("Map1.html")
 	return render(request, 'Map1.html',)
+	# for prod on Linux:
+	#filepath = "/home/jmeroth/Map1.html"
+	#return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
 def addr_to_coords(add_string):

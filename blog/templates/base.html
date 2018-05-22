@@ -1,17 +1,29 @@
 <html>
+{% load staticfiles %}
 	<head>
+		<title>Data Menu</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
 	</head>
 	<body>
-{% load staticfiles %}
+		<div class="page-header">
+            <h1><a href="/">Data Menu</a></h1>
+        </div>
+
 		<div id="header">
 			<span class="logo">City Data</span>
 			<ul class="menu">
 				<li><a href="admin/" target="_blank">Admin</a> </li>
-				<li><a href="map/" target="_blank">My Map</a> </li>
+				<li><a href="map/" target="_blank">Map</a> </li>
 				<li><a href="blog/" target="_blank">Blog</a> </li>
-				<li><a href="bird_api/" target="_blank">Bird json data</a> </li>
-				<li><a href="church/" target="_blank">Church json data</a> </li>
+			</ul>
+			<span class="logo">JSON</span>
+			<ul class="menu">
+				<li><a href="bird_api/" target="_blank">Bird data</a> </li>
+				<li><a href="church/" target="_blank">Church data</a> </li>
 			</ul>
 				<span class="user">
 				<!--Hello {{ request.user.first_name }}, -->
