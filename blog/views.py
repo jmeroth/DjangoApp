@@ -41,11 +41,13 @@ def mymap(request):
 											, fill_opacity=0.7))
 	map.add_child(fgb)
 	map.add_child(folium.LayerControl())
+
+	# for dev/ Windows:
 	map.save("blog/templates/Map1.html")
-	# for prod:
-	#map.save("Map1.html")
 	return render(request, 'Map1.html',)
-	# for prod on Linux:
+
+	# for prod/ Linux
+	#map.save("Map1.html")
 	#filepath = "/home/jmeroth/Map1.html"
 	#return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
