@@ -7,6 +7,7 @@ import os
 import requests
 import json
 import folium
+from folium import IFrame
 
 
 # Utility functions
@@ -24,18 +25,22 @@ def mymap(request):
 	lat = []
 	lon = []
 	des = []
+	lin = []
 	for bird in birds:
 		lat.append(float(bird.lat))
 		lon.append(float(bird.lon))
 		des.append(bird.description)
-		print(bird.lat, bird.lon, bird.description)
+		lin.append(str("" if bird.latin is None else bird.latin))
+		print(bird.lat, bird.lon, bird.description, bird.latin)
 	fgb = folium.FeatureGroup(name="Birds")
-	for lt, ln, ds in zip(lat, lon, des):
+	for lt, ln, ds, li in zip(lat, lon, des, lin):
+		text = ds + "<br>" + li
+		# Using folium IFrame to format popup using HTML element.
+		p = folium.Popup(IFrame(text, width=180, height=80))
 		fgb.add_child(folium.CircleMarker(location=[lt, ln]
-											, popup=folium.Popup(
-												str(ds), parse_html=True)
+											, popup=p
 											, color='green'
-											, radius=3
+											, radius=4
 											, fill_color='green'
 											, fill=True
 											, fill_opacity=0.7))
@@ -47,9 +52,19 @@ def mymap(request):
 	#return render(request, 'Map1.html',)
 
 	# for prod/ Linux
-	map.save("Map1.html")
-	filepath = "/home/jmeroth/Map1.html"
-	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+	#map.save("Map1.html")
+	#filepath = "/home/jmeroth/Map1.html"
+	#return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+	if os.name == 'nt':
+		map.save("blog/templates/Map1.html")
+		return render(request, 'Map1.html',)
+	else:
+		map.save("Map1.html")
+		filepath = "/home/jmeroth/Map1.html"
+		return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+
 
 
 def addr_to_coords(add_string):
@@ -98,11 +113,13 @@ def post_data(request):
 		for bird in birds:
 			print('{" Number": "%s"' % bird.id +
 				',"Description": "%s"' % bird.description +
+				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
 				',"Lat": "%s"' % bird.lat +
 				',"Long": "%s"},' % bird.lon)
 			f.write('{" Number": "%s"' % bird.id +
 				',"Description": "%s"' % bird.description +
+				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
 				',"Lat": "%s"' % bird.lat +
 				',"Long": "%s"},' % bird.lon)

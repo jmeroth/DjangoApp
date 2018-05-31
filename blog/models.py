@@ -20,6 +20,7 @@ class Post(models.Model):
 
 class Bird(models.Model):
 	description = models.CharField(max_length=200)
+	latin = models.CharField(max_length=200, null=True)
 	date = models.DateTimeField(default=timezone.now)
 	lat = models.CharField(max_length=20)
 	lon = models.CharField(max_length=20)
