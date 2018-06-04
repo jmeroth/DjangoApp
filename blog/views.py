@@ -20,23 +20,26 @@ def mymap(request):
 	# Mapbox Control Room - dark with cities in green.
 	# stamenwatercolor - very colorfull
 	# cartodbpositron - grey, best
-	birds = Bird.objects.order_by('-date')[:15]
+	birds = Bird.objects.order_by('-date')[:25]
 	# Creates arrays from the database objects to zip and provide the data for markers.
 	lat = []
 	lon = []
 	des = []
 	lin = []
 	for bird in birds:
-		lat.append(float(bird.lat))
-		lon.append(float(bird.lon))
-		des.append(bird.description)
-		lin.append(str("" if bird.latin is None else bird.latin))
-		print(bird.lat, bird.lon, bird.description, bird.latin)
+		# If lat and lon is in the database, plot the points on the folium map.
+		if (bird.lat is not None and bird.lon is not None):
+			lat.append(float(bird.lat))
+			lon.append(float(bird.lon))
+			des.append(bird.description)
+			lin.append(str("" if bird.latin is None else bird.latin))
+			print(bird.lat, bird.lon, bird.description, bird.latin)
 	fgb = folium.FeatureGroup(name="Birds")
 	for lt, ln, ds, li in zip(lat, lon, des, lin):
 		text = ds + "<br>" + li
 		# Using folium IFrame to format popup using HTML element.
 		p = folium.Popup(IFrame(text, width=180, height=80))
+		
 		fgb.add_child(folium.CircleMarker(location=[lt, ln]
 											, popup=p
 											, color='green'
@@ -71,17 +74,20 @@ def addr_to_coords(add_string):
 	# stub - function will call geocode api
 	MY_API_KEY = "AIzaSyB6MPTDLVXsah1pC28PswyBvl7Ze6-83vM"
 	baseUrl = "https://maps.googleapis.com/maps/api/geocode/json"
-	myUrl =  baseUrl + "?address=" + add_string + "&key=" + MY_API_KEY
-	r = requests.get(myUrl)
-	print(r)
-	if(str(r) == "<Response [200]>"):
-		myjson = r.json()
-	else:
-		print(r)
-		print("'GET' response error")
-	# Returns a dictionary of 'lat' and 'lng' values.
-	return myjson["results"][0]["geometry"]["location"]
+	myUrl =  baseUrl + "?address=" + str(add_string) + "&key=" + MY_API_KEY
+	try:
+		r = requests.get(myUrl)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print("'GET' response error")
+		# Returns a dictionary of 'lat' and 'lng' values.
+		return myjson["results"][0]["geometry"]["location"]
+	except Exception as e:
+		print("Unexpected lat lon response.")
+		return {"lat": 99, "lng": 999}
 
+	
 
 # menu view
 
@@ -104,25 +110,27 @@ def bird_api(request):
 
 # data views
 
-def post_data(request):
-	birds = Bird.objects.order_by('-date')[:15]
+def bird_data(request):
+	birds = Bird.objects.order_by('-date')[:25]
 	# create or open the text file to hold the data.
 	with open("birddata.json", "w+") as f:
 		print("[")
 		f.write("[")
 		for bird in birds:
-			print('{" Number": "%s"' % bird.id +
+			# print and write to file each bird returned from database.
+			print('\n{" Number": "%s"' % bird.id +
 				',"Description": "%s"' % bird.description +
 				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
-				',"Lat": "%s"' % bird.lat +
-				',"Long": "%s"},' % bird.lon)
+				# uses function to lookup coords if lat and lon not given.
+				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
+				',"Long": "%s"},' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])))
 			f.write('{" Number": "%s"' % bird.id +
 				',"Description": "%s"' % bird.description +
 				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
-				',"Lat": "%s"' % bird.lat +
-				',"Long": "%s"},' % bird.lon)
+				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
+				',"Long": "%s"},' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])))
 		print("]")
 		f.write("]")
 	# return render(request, 'blog/post_data.html', {'birds': birds})

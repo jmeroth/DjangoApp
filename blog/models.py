@@ -20,10 +20,11 @@ class Post(models.Model):
 
 class Bird(models.Model):
 	description = models.CharField(max_length=200)
-	latin = models.CharField(max_length=200, null=True)
+	latin = models.CharField(max_length=200, null=True, blank=True)
 	date = models.DateTimeField(default=timezone.now)
-	lat = models.CharField(max_length=20)
-	lon = models.CharField(max_length=20)
+	address = models.CharField(max_length=200, null=True, blank=True)
+	lat = models.CharField(max_length=20, null=True, blank=True)
+	lon = models.CharField(max_length=20, null=True, blank=True)
 
 	def __str__(self):
 		return self.description
