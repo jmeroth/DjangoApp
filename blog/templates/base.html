@@ -1,41 +1,104 @@
 <html>
 {% load staticfiles %}
-	<head>
-		<title>Data Menu</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
-	</head>
-	<body>
-		<div class="page-header">
-            <h1><a href="/">Data Menu</a></h1>
-        </div>
+    <head>
+    	<style type="text/css">
+    		body {
+			    background-color: #333;
+			    font-family: 'Lucida Console';
+			}
+			 
+			h1 a {
+			    color: #5bb85b;
+			    font-family: 'Lucida Console';
+			    font-style: italic;
+			    float: right;
+			}
+			 
+			span {
+			    color: 5bb85b;
+			}
+			 
+			.page-header {
+			    background-color: #333;
+			    margin-top: 0;
+			    padding: 20px 20px 20px 40px;
+			}
+			 
+			#header {
+			    font-size: 130%
+			}
+			 
+			ul {
+			    list-style-type: none;
+			    margin: 0;
+			    padding: 0;
+			    overflow: hidden;
+			    background-color: #333;
+			    margin-bottom: 80px;
+			}
+			 
+			.dataset {
+			    margin-left: 40px;
+			}
+			 
+			li {
+			    float: left;
+			    border-right: 1px solid #bbb;
+			}
+			 
+			li:last-child {
+			    border-right: none;
+			}
+			 
+			li a {
+			    display: block;
+			    color: white;
+			    text-align: center;
+			    padding: 14px 16px;
+			    text-decoration: none;
+			}
+			 
+			li a:hover:not(.active) {
+			    background-color: #111;
+			}
+			 
+			.active {
+			    background-color: #4CAF50;
+			}
 
-		<div id="header">
-			<span class="logo">City Data</span>
-			<ul class="menu">
-				<li><a href="admin/" target="_blank">Admin</a> </li>
-				<li><a href="map/" target="_blank">Map</a> </li>
-				<li><a href="blog/" target="_blank">Blog</a> </li>
-			</ul>
-			<span class="logo">JSON</span>
-			<ul class="menu">
-				<li><a href="bird/" target="_blank">Bird data</a> </li>
-				<li><a href="church/" target="_blank">Church data</a> </li>
-			</ul>
-				<span class="user">
-				<!--Hello {{ request.user.first_name }}, -->
-				<a href="admin/logout" >Logout</a> 
-			</span>
-		</div>
-		{% if messages %}
-			<ul class="messages">
-			{% for message in messages %}
-				<li class="{{ message.tags }}">{{ message|safe }} <a href="#" class="close">x</a> {% endfor %}</li>
-			</ul>
-		{% endif %}
-		<div id="content">{% block content %} {% endblock %} </div>
-	</body>
+    	</style>
+        <title>iData Menu</title>
+        <!--<link rel="stylesheet" href="{% static 'css/blog.css' %}"> -->
+    </head>
+ 
+                <body>
+                                <div class="page-header">
+            <h1><a href="/">iData</a></h1>
+        </div>
+ 
+                                <div id="header">
+                                                <span class="logo"></span>
+                                                <ul class="menu">
+                                                                <li><a class="active" href="#home">Home</a></li>
+                                                                <li><a href="admin/" target="_blank">Admin</a></li>
+                                                                <li><a href="blog/" target="_blank">Blog</a></li>
+                                                                <li><a href="map/" target="_blank">Map</a></li>
+                                                                <li><a href="admin/logout" >Logout</a></li>
+                                                </ul>
+                                                <span class="logo">JSON Data</span>
+                                                <ul class="dataset">
+                                                                <li><a href="bird_api/" target="_blank">Bird data</a></li>
+                                                                <li><a href="church/" target="_blank">Church data</a></li>
+                                                </ul>
+ 
+                                </div>
+ 
+                                {% if messages %}
+                                                <ul class="messages">
+                                                {% for message in messages %}
+                                                                <li class="{{ message.tags }}">{{ message|safe }} <a href="#" class="close">x</a> {% endfor %}</li>
+                                                </ul>
+                                {% endif %}
+                                <div id="content">{% block content %} {% endblock %} </div>
+                </body>
 </html>
