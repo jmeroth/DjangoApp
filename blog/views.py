@@ -20,6 +20,8 @@ def mymap(request):
 	# Mapbox Control Room - dark with cities in green.
 	# stamenwatercolor - very colorfull
 	# cartodbpositron - grey, best
+	
+	# Birds feature group:
 	birds = Bird.objects.order_by('-date')[:25]
 	# Creates arrays from the database objects to zip and provide the data for markers.
 	lat = []
@@ -33,7 +35,7 @@ def mymap(request):
 			lon.append(float(bird.lon))
 			des.append(bird.description)
 			lin.append(str("" if bird.latin is None else bird.latin))
-			print(bird.lat, bird.lon, bird.description, bird.latin)
+			#print(bird.lat, bird.lon, bird.description, bird.latin)
 	fgb = folium.FeatureGroup(name="Birds")
 	for lt, ln, ds, li in zip(lat, lon, des, lin):
 		text = ds + "<br>" + li
@@ -47,7 +49,38 @@ def mymap(request):
 											, fill_color='green'
 											, fill=True
 											, fill_opacity=0.7))
+	# Crime feature group:
+	fgc = folium.FeatureGroup(name="Crime")
+
+	# Retrieve data from data.boston.gov where "limit" is num of records returned.
+	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=10000"
+	r = requests.get(url)
+	if(str(r) == "<Response [200]>"):
+		myjson = r.json()
+	else:
+		print (r)
+		print("'GET' response error")
+	# Once "myjson" is defined:
+	crimearray = []
+	for i in myjson['result']['records']:
+		if (i['SHOOTING'] == 'Y' and i['Lat'] is not None and i['Long'] is not None):
+			crimearray.append(i)
+			#print(i)
+			# f.write('{" Number": "%s"' % str(i["_id"]) +
+			text = i["OFFENSE_CODE_GROUP"] + "<br>" + i['OCCURRED_ON_DATE']
+			print(text)
+			# Using folium IFrame to format popup using HTML element.
+			c = folium.Popup(IFrame(text, width=180, height=80))
+			fgc.add_child(folium.CircleMarker(location=[float(i['Lat']), float(i['Long'])]
+											, popup=c
+											, color='red'
+											, radius=4
+											, fill_color='red'
+											, fill=True
+											, fill_opacity=0.7))
+
 	map.add_child(fgb)
+	map.add_child(fgc)
 	map.add_child(folium.LayerControl())
 
 	# for dev/ Windows:
