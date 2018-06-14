@@ -291,3 +291,36 @@ def tree_data(request):
 	else:
 		filepath = "/home/jmeroth/treedata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+
+def move_data(request):
+	# create or open the text file to hold the data.
+	with open("movedata.json", "w+") as f:
+		f.write("[")
+		# Retrieve data from data.boston.gov.  Limit = number of records.
+		url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=fde6709d-62a7-4523-a8eb-76eac2004f4b&q=OPEN"
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		for i in myjson['result']['records']:
+			#address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
+			#if (i['Status'] != 'EXPIRED'):
+			if (i['Expiration_date'] > '2018-05'):
+				f.write('{" Number": "%s"' % str(i["PermitNumber"]) +
+				',"Description": "%s"' % str(i["Comments"]) +
+				',"Total_Fees": "%s"' % str(i["Total_Fees"]) +
+				',"Date": "%s"' % str(i['Expiration_date']) +
+				',"Lat": "%s"' % str(i['Lat']) +
+				',"Long": "%s"' % str(i['Long']) +
+				',"comments":"%s"},' % str(i['Comments']) )
+		f.write("]")
+	# Linux vs. Windows
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\movedata.json"
+	else:
+		filepath = "/home/jmeroth/movedata.json"
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
