@@ -149,7 +149,7 @@ def bird_data(request):
 	if os.name == 'nt':
 		myserver = r"http://127.0.0.1:8000"
 	else:
-		myserver = "jmeroth.pythonanywhere.com"
+		myserver = "https://jmeroth.pythonanywhere.com"
 
 	birds = Bird.objects.order_by('-date')[:25]
 	# create or open the text file to hold the data.
