@@ -8,6 +8,7 @@ import requests
 import json
 import folium
 from folium import IFrame
+from django.conf import settings
 
 
 # Utility functions
@@ -144,17 +145,26 @@ def bird_api(request):
 # data views
 
 def bird_data(request):
+	# Detect dev or prod environment
+	if os.name == 'nt':
+		myserver = r"http://127.0.0.1:8000"
+	else:
+		myserver = "jmeroth.pythonanywhere.com"
+
 	birds = Bird.objects.order_by('-date')[:25]
 	# create or open the text file to hold the data.
 	with open("birddata.json", "w+") as f:
 		print("[")
 		f.write("[")
 		for bird in birds:
+			bird_path = str(bird.bird_pic)
+			pic_path = myserver + settings.MEDIA_URL + bird_path
 			# print and write to file each bird returned from database.
 			print('\n{" Number": "%s"' % bird.id +
 				',"Description": "%s"' % bird.description +
 				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
+				',"submittedphoto": "%s"' % ("" if bird_path == "" else pic_path) +
 				# uses function to lookup coords if lat and lon not given.
 				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
 				',"Long": "%s"},' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])))
@@ -162,6 +172,7 @@ def bird_data(request):
 				',"Description": "%s"' % bird.description +
 				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
+				',"submittedphoto": "%s"' % ("" if bird_path == "" else pic_path) +
 				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
 				',"Long": "%s"},' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])))
 		print("]")

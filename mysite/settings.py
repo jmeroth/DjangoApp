@@ -61,6 +61,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -120,3 +121,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Absolute file system path to the directory that will hold user-uploaded files.
+# Ex:  "/home2/media/media.lowrence.com/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# URL that handles the media served from MEDIA_ROOT.  Make sure to use a
+# trailing slash.
+# Ex:  "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = '/media/'

@@ -1,6 +1,8 @@
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 
@@ -9,7 +11,7 @@ urlpatterns = [
      # Directs all traffic to the admin screen.	
      #url(r'^/admin$', admin.site.urls),
      url(r'', include('blog.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 """mysite URL Configuration

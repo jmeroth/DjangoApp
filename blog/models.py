@@ -25,6 +25,7 @@ class Bird(models.Model):
 	address = models.CharField(max_length=200, null=True, blank=True)
 	lat = models.CharField(max_length=20, null=True, blank=True)
 	lon = models.CharField(max_length=20, null=True, blank=True)
+	bird_pic = models.ImageField(upload_to = 'images/%Y/%m/%d/', null=True, blank=True)
 
 	def __str__(self):
 		return self.description
