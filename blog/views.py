@@ -167,7 +167,7 @@ def bird_data(request):
 				# uses function to lookup coords if lat and lon not given.
 				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
 				',"Long": "%s"' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])) +
-				',"submittedphoto": "%s"},' % ("" if bird_path == "" else pic_path)
+				',"submittedphoto": "%s"},' % ("None" if bird_path == "" else pic_path)
 				)
 			f.write('{" Number": "%s"' % bird.id +
 				',"Description": "%s"' % bird.description +
@@ -175,7 +175,7 @@ def bird_data(request):
 				',"Date": "%s"' % bird.date +
 				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
 				',"Long": "%s"' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])) +
-				',"submittedphoto": "%s"},' % ("" if bird_path == "" else pic_path)
+				',"submittedphoto": "%s"},' % ("None" if bird_path == "" else pic_path)
 				)
 		print("]")
 		f.write("]")
