@@ -1,6 +1,7 @@
-<html>
+<html lang="en">
 {% load staticfiles %}
     <head>
+    	<meta charset="utf-8">
     	<style type="text/css">
     		body {
 			    background-color: #333;
@@ -71,34 +72,32 @@
         <!--<link rel="stylesheet" href="{% static 'css/blog.css' %}"> -->
     </head>
  
-                <body>
-                                <div class="page-header">
+    <body>
+        <div class="page-header">
             <h1><a href="/">iData</a></h1>
         </div>
- 
-                                <div id="header">
-                                                <span class="logo"></span>
-                                                <ul class="menu">
-                                                                <li><a class="active" href="#home">Home</a></li>
-                                                                <li><a href="admin/" target="_blank">Admin</a></li>
-                                                                <li><a href="blog/" target="_blank">Blog</a></li>
-                                                                <li><a href="map/" target="_blank">Map</a></li>
-                                                                <li><a href="admin/logout" >Logout</a></li>
-                                                </ul>
-                                                <span class="logo">JSON Data</span>
-                                                <ul class="dataset">
-                                                                <li><a href="bird_api/" target="_blank">Bird data</a></li>
-                                                                <li><a href="church/" target="_blank">Church data</a></li>
-                                                </ul>
- 
-                                </div>
- 
-                                {% if messages %}
-                                                <ul class="messages">
-                                                {% for message in messages %}
-                                                                <li class="{{ message.tags }}">{{ message|safe }} <a href="#" class="close">x</a> {% endfor %}</li>
-                                                </ul>
-                                {% endif %}
-                                <div id="content">{% block content %} {% endblock %} </div>
-                </body>
+        <div id="header">
+            <span class="logo"></span>
+            <ul class="menu">
+                <li><a class="active" href="#home">Home</a></li>
+                <li><a href="admin/" target="_blank">Admin</a></li>
+                <li><a href="blog/" target="_blank">Blog</a></li>
+                <li><a href="map/" target="_blank">Map</a></li>
+                <li><a href="admin/logout" >Logout</a></li>
+            </ul>
+            <span class="logo">JSON Data</span>
+            <ul class="dataset">
+                <li><a href="bird_api/" target="_blank">Bird data</a></li>
+                <li><a href="church/" target="_blank">Church data</a></li>
+            </ul>
+        </div>
+        {% if messages %}
+            <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message|safe }} <a href="#" class="close">x</a>
+            {% endfor %}</li>
+            </ul>
+        {% endif %}
+        <div id="content">{% block content %} {% endblock %} </div>
+    </body>
 </html>

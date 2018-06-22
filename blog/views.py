@@ -368,3 +368,33 @@ def move_data(request):
 	else:
 		filepath = "/home/jmeroth/movedata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+
+def graffiti_data(request):
+	# create or open the text file to hold the data.
+	# with open("graffitidata.json", "w+") as f:
+		# f.write("[")
+		# # Retrieve data from data.boston.gov.
+		# url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=2968e2c0-d479-49ba-a884-4ef523ada3c0&q=tree"
+		# r = requests.get(url)
+		# if(str(r) == "<Response [200]>"):
+		# 	myjson = r.json()
+		# else:
+		# 	print (r)
+		# 	print("'GET' response error")
+		# # Once "myjson" is defined:
+		# for i in myjson['result']['records']:
+		# 	if i['QUEUE'] == 'PARK_Tree Maintenance Request':				
+		# 		f.write('{" Number": "%s"' % str(i["CASE_ENQUIRY_ID"]) +
+		# 		',"Description": "%s"' % str(i["CLOSURE_REASON"]) +
+		# 		',"Date": "%s"' % str(i['open_dt']) +
+		# 		',"Lat": "%s"' % str(i['Latitude']) +
+		# 		',"Long": "%s"' % str(i['Longitude']) +
+		# 		',"submittedphoto": "%s"},' % str(i["SubmittedPhoto"]))
+		# f.write("]")
+	# Linux vs. Windows
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\graffitidata.json"
+	else:
+		filepath = "/home/jmeroth/graffitidata.json"
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
