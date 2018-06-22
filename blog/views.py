@@ -164,17 +164,19 @@ def bird_data(request):
 				',"Description": "%s"' % bird.description +
 				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
-				',"submittedphoto": "%s"' % ("" if bird_path == "" else pic_path) +
 				# uses function to lookup coords if lat and lon not given.
 				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
-				',"Long": "%s"},' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])))
+				',"Long": "%s"' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])) +
+				',"submittedphoto": "%s"},' % ("" if bird_path == "" else pic_path)
+				)
 			f.write('{" Number": "%s"' % bird.id +
 				',"Description": "%s"' % bird.description +
 				',"Latin": "%s"' % ("" if bird.latin is None else bird.latin) +
 				',"Date": "%s"' % bird.date +
-				',"submittedphoto": "%s"' % ("" if bird_path == "" else pic_path) +
 				',"Lat": "%s"' % (bird.lat if bird.lat is not None else str(addr_to_coords(bird.address)["lat"])) +
-				',"Long": "%s"},' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])))
+				',"Long": "%s"' % (bird.lon if bird.lon is not None else str(addr_to_coords(bird.address)["lng"])) +
+				',"submittedphoto": "%s"},' % ("" if bird_path == "" else pic_path)
+				)
 		print("]")
 		f.write("]")
 	# return render(request, 'blog/post_data.html', {'birds': birds})
