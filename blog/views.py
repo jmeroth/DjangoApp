@@ -80,8 +80,42 @@ def mymap(request):
 											, fill=True
 											, fill_opacity=0.7))
 
+	# Quake feature group:
+	fgq = folium.FeatureGroup(name="Quake")
+
+	# Retrieve data from earthquake.usgs.gov where 2.5 is the min richter scale value.
+	url = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson"
+	r = requests.get(url)
+	if(str(r) == "<Response [200]>"):
+		myjson = r.json()
+	else:
+		print (r)
+		print("'GET' response error")
+	# Once "myjson" is defined:
+	quakearray = []
+	for i in myjson['features']:
+		if (i['properties']['mag'] >= 2.8 
+			and i['geometry']['coordinates'][0] is not None 
+			and i['geometry']['coordinates'][1] is not None):
+			quakearray.append(i)
+			#print(i)
+			# f.write('{" Number": "%s"' % str(i["_id"]) +
+			text = i["properties"]["place"] + "<br>" + str(i["properties"]["mag"])
+			print(text)
+			# Using folium IFrame to format popup using HTML element.
+			c = folium.Popup(IFrame(text, width=180, height=80))
+			fgq.add_child(folium.CircleMarker(location=[float(i['geometry']['coordinates'][1])
+														, float(i['geometry']['coordinates'][0])]
+											, popup=c
+											, color='yellow'
+											, radius=4
+											, fill_color='yellow'
+											, fill=True
+											, fill_opacity=0.7))
+
 	map.add_child(fgb)
 	map.add_child(fgc)
+	map.add_child(fgq)
 	map.add_child(folium.LayerControl())
 
 	# for dev/ Windows:
