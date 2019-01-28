@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Post, Bird, Church
+from .models import Post, Bird, Church, Violation, WaterSystem
 from django.views.generic import ListView
 from django.utils import timezone
 from django.views.static import serve
@@ -72,13 +72,14 @@ def mymap(request):
 			print(text)
 			# Using folium IFrame to format popup using HTML element.
 			c = folium.Popup(IFrame(text, width=180, height=80))
-			fgc.add_child(folium.CircleMarker(location=[float(i['Lat']), float(i['Long'])]
-											, popup=c
-											, color='red'
-											, radius=4
-											, fill_color='red'
-											, fill=True
-											, fill_opacity=0.7))
+			if i['Lat'].isnumeric():
+				fgc.add_child(folium.CircleMarker(location=[float(i['Lat']), float(i['Long'])]
+												, popup=c
+												, color='red'
+												, radius=4
+												, fill_color='red'
+												, fill=True
+												, fill_opacity=0.7))
 
 	# Quake feature group:
 	fgq = folium.FeatureGroup(name="Quake")
@@ -434,3 +435,85 @@ def graffiti_data(request):
 	else:
 		filepath = "/home/jmeroth/graffitidata.json"
 	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
+
+
+def violation_data(request):
+	# Connect to sdwis api:
+	# Retrieve data from data.boston.gov.  Limit = number of records.
+	for j in range(905760, 2394088, 100):
+		url = "https://iaspub.epa.gov/enviro/efservice/violation/JSON/rows/" + str(j) + ":" + str(j + 99)
+		print(url)
+
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+			for i in myjson:
+				try:		
+					#address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
+					#if (i['Status'] != 'EXPIRED'):
+					print(i["PWSID"], i["VIOLATION_ID"], i["IS_HEALTH_BASED_IND"])
+					violation = Violation(pwsid = i["PWSID"],
+										violation_id = i["VIOLATION_ID"],
+										is_health_based_ind = i["IS_HEALTH_BASED_IND"],
+										compl_per_begin_date = i["COMPL_PER_BEGIN_DATE"]
+										)
+					violation.save()
+				except KeyError:
+					print(i)
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		
+	
+	# Linux vs. Windows
+	# if os.name == 'nt':
+	# 	filepath = "C:\\Users\\jmeroth\\djangogirls\\movedata.json"
+	# else:
+	# 	filepath = "/home/jmeroth/movedata.json"
+	# return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+	birds = Bird.objects.all()
+	return render(request, 'blog/bird_api.html', {'birds': birds})
+
+
+
+
+def system_data(request):
+	# Connect to sdwis api:
+	for j in range(247, 146718, 100):
+		url = "https://iaspub.epa.gov/enviro/efservice/water_system/PWS_ACTIVITY_CODE/=/A/JSON/ROWS/" + str(j) + ":" + str(j + 99)
+		print(url)
+
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+			for i in myjson:
+				try:		
+					#address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
+					#if (i['Status'] != 'EXPIRED'):
+					print(i["PWSID"])
+					system = WaterSystem(
+										primacy_agency_code = i["PRIMACY_AGENCY_CODE"],
+										pws_type_code = i["PWS_TYPE_CODE"],
+										city_name = i["CITY_NAME"],
+										gw_sw_code = i["GW_SW_CODE"],
+										population_served_count = i["POPULATION_SERVED_COUNT"],
+										pwsid = i["PWSID"],
+										pws_activity_code = i["PWS_ACTIVITY_CODE"],
+										pws_name = i["PWS_NAME"],
+										state_code = i["STATE_CODE"],
+										zip_code = i["ZIP_CODE"],
+										counties_served = i["COUNTIES_SERVED"],
+										cities_served = i["CITIES_SERVED"],
+										)
+					system.save()
+				except KeyError:
+					print(i)
+		else:
+			print (r)
+			print("'GET' response error")
+
+	birds = Bird.objects.all()
+	return render(request, 'blog/bird_api.html', {'birds': birds})
+

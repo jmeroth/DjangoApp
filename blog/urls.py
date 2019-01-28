@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^move/', views.move_data, name='move_data'),
     url(r'^tree/', views.tree_data, name='tree_data'),
     url(r'^map/', views.mymap, name='mymap'),
+    url(r'^violation/', views.violation_data, name='violation'),
+    url(r'^system/', views.system_data, name='system'),
 ]
