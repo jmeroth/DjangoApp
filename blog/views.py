@@ -64,16 +64,16 @@ def mymap(request):
 	# Once "myjson" is defined:
 	crimearray = []
 	for i in myjson['result']['records']:
-		if (i['SHOOTING'] == 'Y' and i['Lat'] is not None and i['Long'] is not None):
+		if (i['shooting'] == 'Y' and i['lat'] is not None and i['long'] is not None):
 			crimearray.append(i)
 			#print(i)
 			# f.write('{" Number": "%s"' % str(i["_id"]) +
-			text = i["OFFENSE_CODE_GROUP"] + "<br>" + i['OCCURRED_ON_DATE']
+			text = i["offense_code_group"] + "<br>" + i['occurred_on_date']
 			print(text)
 			# Using folium IFrame to format popup using HTML element.
 			c = folium.Popup(IFrame(text, width=180, height=80))
-			if i['Lat'].isnumeric():
-				fgc.add_child(folium.CircleMarker(location=[float(i['Lat']), float(i['Long'])]
+			if i['lat'].isnumeric():
+				fgc.add_child(folium.CircleMarker(location=[float(i['lat']), float(i['long'])]
 												, popup=c
 												, color='red'
 												, radius=4
@@ -265,12 +265,12 @@ def crime_data(request):
 			print("'GET' response error")
 		# Once "myjson" is defined:
 		for i in myjson['result']['records']:
-			if (i['SHOOTING'] == 'Y'):
+			if (i['shooting'] == 'Y'):
 				f.write('{" Number": "%s"' % str(i["_id"]) +
-				',"Description": "%s"' % str(i["OFFENSE_CODE_GROUP"]) +
-				',"Date": "%s"' % str(i['OCCURRED_ON_DATE']) +
-				',"Lat": "%s"' % str(i['Lat']) +
-				',"Long": "%s"},' % str(i['Long']))
+				',"Description": "%s"' % str(i["offense_group_code"]) +
+				',"Date": "%s"' % str(i['occurred_on_date']) +
+				',"Lat": "%s"' % str(i['lat']) +
+				',"Long": "%s"},' % str(i['long']))
 		f.write("]")
 	# Linux vs. Windows
 	if os.name == 'nt':
@@ -391,13 +391,13 @@ def move_data(request):
 			#address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
 			#if (i['Status'] != 'EXPIRED'):
 			if (i['Expiration_date'] > '2018-05'):
-				f.write('{" Number": "%s"' % str(i["PermitNumber"]) +
-				',"Description": "%s"' % str(i["Comments"]) +
-				',"Total_Fees": "%s"' % str(i["Total_Fees"]) +
-				',"Date": "%s"' % str(i['Expiration_date']) +
-				',"Lat": "%s"' % str(i['Lat']) +
-				',"Long": "%s"' % str(i['Long']) +
-				',"comments":"%s"},' % str(i['Comments']) )
+				f.write('{" Number": "%s"' % str(i["permitnumber"]) +
+				',"Description": "%s"' % str(i["comments"]) +
+				',"Total_Fees": "%s"' % str(i["total_fees"]) +
+				',"Date": "%s"' % str(i['expiration_date']) +
+				',"Lat": "%s"' % str(i['lat']) +
+				',"Long": "%s"' % str(i['long']) +
+				',"comments":"%s"},' % str(i['comments']) )
 		f.write("]")
 	# Linux vs. Windows
 	if os.name == 'nt':
@@ -440,39 +440,31 @@ def graffiti_data(request):
 
 def violation_data(request):
 	# Connect to sdwis api:
-	# Retrieve data from data.boston.gov.  Limit = number of records.
-	for j in range(905760, 2394088, 100):
+
+
+	for j in range(1735024, 2394088, 100):
 		url = "https://iaspub.epa.gov/enviro/efservice/violation/JSON/rows/" + str(j) + ":" + str(j + 99)
+		#url = "https://iaspub.epa.gov/enviro/efservice/violation/JSON/rows/" + str(j) + ":" + str(j)
 		print(url)
 
 		r = requests.get(url)
 		if(str(r) == "<Response [200]>"):
 			myjson = r.json()
+			print(len(myjson))
 			for i in myjson:
-				try:		
-					#address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
-					#if (i['Status'] != 'EXPIRED'):
-					print(i["PWSID"], i["VIOLATION_ID"], i["IS_HEALTH_BASED_IND"])
-					violation = Violation(pwsid = i["PWSID"],
-										violation_id = i["VIOLATION_ID"],
-										is_health_based_ind = i["IS_HEALTH_BASED_IND"],
-										compl_per_begin_date = i["COMPL_PER_BEGIN_DATE"]
-										)
-					violation.save()
-				except KeyError:
-					print(i)
+				#try:		
+				print(i["PWSID"], i["VIOLATION_ID"], i["IS_HEALTH_BASED_IND"])
+				violation = Violation(pwsid = i["PWSID"],
+									violation_id = i["VIOLATION_ID"],
+									is_health_based_ind = i["IS_HEALTH_BASED_IND"],
+									compl_per_begin_date = i["COMPL_PER_BEGIN_DATE"]
+									)
+				violation.save()
+			
 		else:
 			print (r)
 			print("'GET' response error")
-		# Once "myjson" is defined:
-		
-	
-	# Linux vs. Windows
-	# if os.name == 'nt':
-	# 	filepath = "C:\\Users\\jmeroth\\djangogirls\\movedata.json"
-	# else:
-	# 	filepath = "/home/jmeroth/movedata.json"
-	# return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+
 	birds = Bird.objects.all()
 	return render(request, 'blog/bird_api.html', {'birds': birds})
 
@@ -481,7 +473,7 @@ def violation_data(request):
 
 def system_data(request):
 	# Connect to sdwis api:
-	for j in range(247, 146718, 100):
+	for j in range(247, 1097660, 100):
 		url = "https://iaspub.epa.gov/enviro/efservice/water_system/PWS_ACTIVITY_CODE/=/A/JSON/ROWS/" + str(j) + ":" + str(j + 99)
 		print(url)
 
