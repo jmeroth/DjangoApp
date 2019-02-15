@@ -72,7 +72,7 @@ def mymap(request):
 			print(text)
 			# Using folium IFrame to format popup using HTML element.
 			c = folium.Popup(IFrame(text, width=180, height=80))
-			if i['lat'].isnumeric():
+			if i['lat']:  #.isnumeric():
 				fgc.add_child(folium.CircleMarker(location=[float(i['lat']), float(i['long'])]
 												, popup=c
 												, color='red'
@@ -267,7 +267,7 @@ def crime_data(request):
 		for i in myjson['result']['records']:
 			if (i['shooting'] == 'Y'):
 				f.write('{" Number": "%s"' % str(i["_id"]) +
-				',"Description": "%s"' % str(i["offense_group_code"]) +
+				',"Description": "%s"' % str(i["offense_code_group"]) +
 				',"Date": "%s"' % str(i['occurred_on_date']) +
 				',"Lat": "%s"' % str(i['lat']) +
 				',"Long": "%s"},' % str(i['long']))
