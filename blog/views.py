@@ -64,16 +64,16 @@ def mymap(request):
 	# Once "myjson" is defined:
 	crimearray = []
 	for i in myjson['result']['records']:
-		if (i['shooting'] == 'Y' and i['lat'] is not None and i['long'] is not None):
+		if (i['SHOOTING'] == 'Y' and i['Lat'] is not None and i['Long'] is not None):
 			crimearray.append(i)
 			#print(i)
 			# f.write('{" Number": "%s"' % str(i["_id"]) +
-			text = i["offense_code_group"] + "<br>" + i['occurred_on_date']
+			text = i["OFFENSE_CODE_GROUP"] + "<br>" + i['OCCURRED_ON_DATE']
 			print(text)
 			# Using folium IFrame to format popup using HTML element.
 			c = folium.Popup(IFrame(text, width=180, height=80))
-			if i['lat']:  #.isnumeric():
-				fgc.add_child(folium.CircleMarker(location=[float(i['lat']), float(i['long'])]
+			if i['Lat']:  #.isnumeric():
+				fgc.add_child(folium.CircleMarker(location=[float(i['Lat']), float(i['Long'])]
 												, popup=c
 												, color='red'
 												, radius=4
@@ -95,7 +95,7 @@ def mymap(request):
 	# Once "myjson" is defined:
 	quakearray = []
 	for i in myjson['features']:
-		if (i['properties']['mag'] >= 2.8 
+		if (i['properties']['mag'] >= 2.5 
 			and i['geometry']['coordinates'][0] is not None 
 			and i['geometry']['coordinates'][1] is not None):
 			quakearray.append(i)
@@ -442,7 +442,7 @@ def violation_data(request):
 	# Connect to sdwis api:
 
 
-	for j in range(1735024, 2394088, 100):
+	for j in range(2178024, 2212460, 100):
 		url = "https://iaspub.epa.gov/enviro/efservice/violation/JSON/rows/" + str(j) + ":" + str(j + 99)
 		#url = "https://iaspub.epa.gov/enviro/efservice/violation/JSON/rows/" + str(j) + ":" + str(j)
 		print(url)
