@@ -375,10 +375,11 @@ def tree_data(request):
 
 
 def move_data(request):
+	# This function reads data from the city and transforms it into a json array that DigitalInteractives software expects.
 	# create or open the text file to hold the data.
 	with open("movedata.json", "w+") as f:
 		f.write("[")
-		# Retrieve data from data.boston.gov.  Limit = number of records.
+		# Retrieve data from data.boston.gov.  Could use: Limit = number of records.
 		url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=fde6709d-62a7-4523-a8eb-76eac2004f4b&q=OPEN"
 		r = requests.get(url)
 		if(str(r) == "<Response [200]>"):
@@ -390,7 +391,9 @@ def move_data(request):
 		for i in myjson['result']['records']:
 			#address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
 			#if (i['Status'] != 'EXPIRED'):
-			if (i['Expiration_date'] > '2018-05'):
+			#if (i['Expiration_date'] > '2018-05'):
+			# Filter lines above not needed since url limits records to "OPEN"
+			if(True):
 				f.write('{" Number": "%s"' % str(i["permitnumber"]) +
 				',"Description": "%s"' % str(i["comments"]) +
 				',"Total_Fees": "%s"' % str(i["total_fees"]) +
