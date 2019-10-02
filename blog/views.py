@@ -50,69 +50,76 @@ def mymap(request):
 											, fill_color='green'
 											, fill=True
 											, fill_opacity=0.7))
+	
 	# Crime feature group:
 	fgc = folium.FeatureGroup(name="Crime")
-
 	# Retrieve data from data.boston.gov where "limit" is num of records returned.
 	url = "https://data.boston.gov/api/3/action/datastore_search?resource_id=12cb3883-56f5-47de-afa5-3b1cf61b257b&limit=10000"
-	r = requests.get(url)
-	if(str(r) == "<Response [200]>"):
-		myjson = r.json()
-	else:
-		print (r)
-		print("'GET' response error")
-	# Once "myjson" is defined:
-	crimearray = []
-	for i in myjson['result']['records']:
-		if (i['SHOOTING'] == 'Y' and i['Lat'] is not None and i['Long'] is not None):
-			crimearray.append(i)
-			#print(i)
-			# f.write('{" Number": "%s"' % str(i["_id"]) +
-			text = i["OFFENSE_CODE_GROUP"] + "<br>" + i['OCCURRED_ON_DATE']
-			print(text)
-			# Using folium IFrame to format popup using HTML element.
-			c = folium.Popup(IFrame(text, width=180, height=80))
-			if i['Lat']:  #.isnumeric():
-				fgc.add_child(folium.CircleMarker(location=[float(i['Lat']), float(i['Long'])]
-												, popup=c
-												, color='red'
-												, radius=4
-												, fill_color='red'
-												, fill=True
-												, fill_opacity=0.7))
+	try:
+		r = requests.get(url)
+
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		crimearray = []
+		for i in myjson['result']['records']:
+			if (i['SHOOTING'] == 'Y' and i['Lat'] is not None and i['Long'] is not None):
+				crimearray.append(i)
+				#print(i)
+				# f.write('{" Number": "%s"' % str(i["_id"]) +
+				text = i["OFFENSE_CODE_GROUP"] + "<br>" + i['OCCURRED_ON_DATE']
+				print(text)
+				# Using folium IFrame to format popup using HTML element.
+				c = folium.Popup(IFrame(text, width=180, height=80))
+				if i['Lat']:  #.isnumeric():
+					fgc.add_child(folium.CircleMarker(location=[float(i['Lat']), float(i['Long'])]
+													, popup=c
+													, color='red'
+													, radius=4
+													, fill_color='red'
+													, fill=True
+													, fill_opacity=0.7))
+	except:
+		print("error", {r})
 
 	# Quake feature group:
 	fgq = folium.FeatureGroup(name="Quake")
 
 	# Retrieve data from earthquake.usgs.gov where 2.5 is the min richter scale value.
 	url = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson"
-	r = requests.get(url)
-	if(str(r) == "<Response [200]>"):
-		myjson = r.json()
-	else:
-		print (r)
-		print("'GET' response error")
-	# Once "myjson" is defined:
-	quakearray = []
-	for i in myjson['features']:
-		if (i['properties']['mag'] >= 2.5 
-			and i['geometry']['coordinates'][0] is not None 
-			and i['geometry']['coordinates'][1] is not None):
-			quakearray.append(i)
-			#print(i)
-			# f.write('{" Number": "%s"' % str(i["_id"]) +
-			text = i["properties"]["place"] + "<br>" + str(i["properties"]["mag"])
-			print(text)
-			# Using folium IFrame to format popup using HTML element.
-			c = folium.Popup(IFrame(text, width=180, height=80))
-			fgq.add_child(folium.CircleMarker(location=[float(i['geometry']['coordinates'][1])
-														, float(i['geometry']['coordinates'][0])]
-											, popup=c
-											, color='yellow'
-											, radius=4
-											, fill_color='yellow'
-											, fill=True
-											, fill_opacity=0.7))
+	try:
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		quakearray = []
+		for i in myjson['features']:
+			if (i['properties']['mag'] >= 2.5 
+				and i['geometry']['coordinates'][0] is not None 
+				and i['geometry']['coordinates'][1] is not None):
+				quakearray.append(i)
+				#print(i)
+				# f.write('{" Number": "%s"' % str(i["_id"]) +
+				text = i["properties"]["place"] + "<br>" + str(i["properties"]["mag"])
+				print(text)
+				# Using folium IFrame to format popup using HTML element.
+				c = folium.Popup(IFrame(text, width=180, height=80))
+				fgq.add_child(folium.CircleMarker(location=[float(i['geometry']['coordinates'][1])
+															, float(i['geometry']['coordinates'][0])]
+												, popup=c
+												, color='yellow'
+												, radius=4
+												, fill_color='yellow'
+												, fill=True
+												, fill_opacity=0.7))
+	except:
+		print(f"error", {r})
 
 	map.add_child(fgb)
 	map.add_child(fgc)
@@ -512,3 +519,38 @@ def system_data(request):
 	birds = Bird.objects.all()
 	return render(request, 'blog/bird_api.html', {'birds': birds})
 
+
+def sr_data(request):
+	# This function reads data from the city and transforms it into a json array that DigitalInteractives software expects.
+	# create or open the text file to hold the data.
+	with open("srdata.json", "w+") as f:
+		f.write("[")
+		# Retrieve data from data.boston.gov.  Could use: Limit = number of records.
+		url = "https://data.boston.gov/api/3/action/datastore_search_sql?sql=SELECT%20*%20from%20%222968e2c0-d479-49ba-a884-4ef523ada3c0%22%20WHERE%20open_dt%20%3E%20%272019-09-29%27%20AND%20case_status%20=%20%27Open%27%20limit%2024"
+		r = requests.get(url)
+		if(str(r) == "<Response [200]>"):
+			myjson = r.json()
+		else:
+			print (r)
+			print("'GET' response error")
+		# Once "myjson" is defined:
+		for i in myjson['result']['records']:
+			#address_string = i['ADDRESS']+' '+i['CITY']+' '+i['STATE']+' '+i['ZIP']
+			#if (i['Status'] != 'EXPIRED'):
+			#if (i['Expiration_date'] > '2018-05'):
+			# Filter lines above not needed since url limits records to "OPEN"
+			if(True):
+				f.write('{" Number": "%s"' % str(i["case_enquiry_id"]) +
+				',"Department": "%s"' % str(i["department"]) +
+				',"Case Title": "%s"' % str(i["case_title"]) +
+				',"Date": "%s"' % str(i['open_dt']) +
+				',"Lat": "%s"' % str(i['latitude']) +
+				',"Long": "%s"' % str(i['longitude']) +
+				',"Source":"%s"},' % str(i['source']) )
+		f.write("]")
+	# Linux vs. Windows
+	if os.name == 'nt':
+		filepath = "C:\\Users\\jmeroth\\djangogirls\\srdata.json"
+	else:
+		filepath = "/home/jmeroth/srdata.json"
+	return serve(request, os.path.basename(filepath), os.path.dirname(filepath))

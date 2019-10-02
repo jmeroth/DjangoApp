@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^map/', views.mymap, name='mymap'),
     url(r'^violation/', views.violation_data, name='violation'),
     url(r'^system/', views.system_data, name='system'),
+    url(r'^sr/', views.sr_data, name='sr_data'),
 ]
