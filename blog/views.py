@@ -540,13 +540,13 @@ def sr_data(request):
 			#if (i['Expiration_date'] > '2018-05'):
 			# Filter lines above not needed since url limits records to "OPEN"
 			if(True):
-				f.write('{" Number": "%s"' % str(i["case_enquiry_id"]) +
-				',"Department": "%s"' % str(i["department"]) +
-				',"Case Title": "%s"' % str(i["case_title"]) +
-				',"Date": "%s"' % str(i['open_dt']) +
+				f.write('{"Ticket_No": "%s"' % str(i["case_enquiry_id"]) +
+				',"name": "%s"' % str(i["department"]) +
+				',"CASE_TITLE": "%s"' % str(i["case_title"]) +
+				',"Issued_date": "%s"' % str(i['open_dt']) +
 				',"Lat": "%s"' % str(i['latitude']) +
 				',"Long": "%s"' % str(i['longitude']) +
-				',"Source":"%s"},' % str(i['source']) )
+				',"comments":"%s"},' % str(i['source']) )
 		f.write("]")
 	# Linux vs. Windows
 	if os.name == 'nt':
